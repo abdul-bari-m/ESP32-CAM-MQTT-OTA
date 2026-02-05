@@ -2,36 +2,41 @@
 
 ## Overview
 
-This project uses an **ESP32-CAM** to read temperature and humidity from a **DHT11 sensor** and send the data securely to **HiveMQ Cloud** using MQTT.
-The device supports **OTA (Over-The-Air) firmware updates** and uses **deep sleep** to save power when it’s not active.
+This project uses an **ESP32-CAM module** to read temperature and humidity from a **DHT11 sensor** and send the data securely to **HiveMQ Cloud** using MQTT.
 
-Firmware versioning is included so OTA updates can be easily verified.
+The device supports **OTA (Over-The-Air) firmware updates**, so new firmware can be uploaded without reconnecting a USB cable. To reduce power usage, the device automatically enters **deep sleep** after completing its work.
+
+The **onboard flash LED (GPIO 4)** is used as a simple status indicator to show when the device is active.
+
+Firmware versioning is included to make OTA updates easy to confirm.
 
 ---
 
-## What this project does
+## What the project does
 
 * Connects to Wi-Fi with timeout handling
 * Publishes sensor data securely using MQTT (TLS)
-* Reports device status (online, sleeping, offline)
-* Supports OTA firmware updates without USB cable
-* Enters deep sleep automatically to reduce power usage
-* Prints firmware version at boot for OTA verification
+* Sends device status messages (online, sleeping, offline)
+* Supports OTA firmware updates
+* Uses deep sleep to save power
+* Prints firmware version at boot for verification
 
 ---
 
 ## Hardware used
 
-* ESP32-CAM
+* **ESP32-CAM module**
 * DHT11 temperature & humidity sensor
-* Onboard flash LED (GPIO 4)
+* **Onboard flash LED (GPIO 4)** used as activity indicator
 * USB-TTL adapter (for first upload and debugging)
+
+> The camera is part of the ESP32-CAM module but is not used in this version of the project.
 
 ---
 
 ## MQTT setup
 
-This project uses **one MQTT broker** with **two topics**.
+The project uses **one MQTT broker** with **two topics**.
 
 ### Sensor data topic
 
@@ -39,7 +44,7 @@ This project uses **one MQTT broker** with **two topics**.
 iot/esp32cam/env
 ```
 
-Example message:
+Example payload:
 
 ```json
 {
@@ -61,18 +66,18 @@ Status messages:
 * `SLEEPING` – device entered deep sleep
 * `OFFLINE` – unexpected disconnect (Last Will message)
 
-Keeping data and status in separate topics makes monitoring much easier.
+Keeping data and status separate makes monitoring easier.
 
 ---
 
 ## OTA update flow
 
-1. ESP32 boots or wakes from deep sleep
+1. ESP32-CAM boots or wakes from deep sleep
 2. Connects to Wi-Fi and MQTT
 3. OTA service starts
 4. Device stays awake for a fixed OTA window
-5. If OTA begins, deep sleep is blocked
-6. After OTA or timeout, device goes to deep sleep
+5. If an OTA update starts, deep sleep is blocked
+6. After OTA or timeout, the device enters deep sleep
 
 At every boot, the firmware version is printed:
 
@@ -80,33 +85,34 @@ At every boot, the firmware version is printed:
 Firmware version: 1.0.2
 ```
 
-This makes it easy to confirm that an OTA update worked.
+This confirms that a new OTA update is running.
 
 ---
 
 ## Power management
 
 * Sensor data is sent **once per wake cycle**
-* OTA window stays open for **60 seconds**
+* OTA window remains open for **60 seconds**
 * Device then enters **deep sleep for 1 minute**
 * Wi-Fi and MQTT are shut down cleanly before sleeping
 
 This keeps power usage low while still allowing remote updates.
 
 ---
-### Hardware – Active and publishing
 
-LED turns on when the device is awake and sending data.
+## Screenshots
+
+### Hardware – Active (publishing data)
+
+The flash LED turns on while the device is awake and sending data.
 
 ![Hardware active](images/hardware_active_led_on.png)
 
 ---
 
-## Screenshots
+### Hardware – Deep sleep
 
-### Hardware – Deep sleep state
-
-LED is off while the device is in deep sleep.
+Flash LED is off while the device is in deep sleep.
 
 ![Hardware deep sleep](images/hardware_deep_sleep_led_off.png)
 
@@ -114,7 +120,7 @@ LED is off while the device is in deep sleep.
 
 ### Serial monitor logs
 
-Shows Wi-Fi connection, MQTT connection, and data publishing.
+Wi-Fi connection, MQTT connection, and sensor data publishing.
 
 ![Serial monitor logs](images/serial_monitor_wifi_mqtt_logs.png)
 
@@ -122,7 +128,7 @@ Shows Wi-Fi connection, MQTT connection, and data publishing.
 
 ### OTA update via Arduino IDE
 
-Firmware update in progress using OTA and New firmware version running after OTA update
+OTA update in progress and new firmware running after update.
 
 ![OTA update](images/ota_update_arduino_ide.png)
 
@@ -130,7 +136,7 @@ Firmware update in progress using OTA and New firmware version running after OTA
 
 ### MQTT messages in HiveMQ Cloud
 
-Sensor data and status messages visible in HiveMQ web client.
+Sensor data and status messages visible in the web client.
 
 ![MQTT messages](images/mqtt_messages_hivemq_cloud.png)
 
@@ -144,8 +150,8 @@ Firmware version is defined in code:
 #define FW_VERSION "1.0.2"
 ```
 
-* Version is increased for every OTA update
-* GitHub code and device firmware always match
+* Version is updated with each OTA release
+* GitHub code and device firmware stay in sync
 * Makes testing and verification simple
 
 ---
@@ -156,7 +162,7 @@ Firmware version is defined in code:
 2. Upload firmware once using USB
 3. Open Serial Monitor to confirm connections
 4. Perform OTA updates using Arduino IDE
-5. View MQTT data using HiveMQ Cloud web client or MQTT Explorer
+5. View MQTT data using HiveMQ Cloud or MQTT Explorer
 
 ---
 
@@ -166,11 +172,11 @@ Firmware version is defined in code:
 ESP32-CAM-MQTT-OTA/
 ├── src/
 │   └── main/
-|       └── main.ino
+│       └── main.ino
 ├── images/
 │   ├── hardware_active_led_on.png
 │   ├── hardware_deep_sleep_led_off.png
-│   ├── serial_monitor_wifi_mqtt_logs.jpg
+│   ├── serial_monitor_wifi_mqtt_logs.png
 │   ├── ota_update_arduino_ide.png
 │   └── mqtt_messages_hivemq_cloud.png
 └── README.md
@@ -180,11 +186,13 @@ ESP32-CAM-MQTT-OTA/
 
 ## Summary
 
-This project shows a practical way to build an IoT device using ESP32-CAM with secure MQTT communication, OTA firmware updates, and power-efficient deep sleep. It’s simple to understand, easy to maintain, and suitable for learning, demos, and small real-world use cases.
+This project demonstrates a practical IoT setup using **ESP32-CAM**, combining secure MQTT communication, OTA firmware updates, and power-efficient deep sleep. It focuses on reliability and real-world usage rather than just a basic demo.
 
 ---
+
 ## Author
-Abdul Bari  
-IoT & Embedded Developer  
+
+**Abdul Bari**
+IoT & Embedded Developer
 
 ---
