@@ -1,4 +1,4 @@
-# ESP32-CAM Environmental Monitor (MQTT • OTA • Deep Sleep)
+# ESP32-CAM Environmental Monitor (MQTT, OTA, Deep Sleep)
 
 ## Overview
 
@@ -94,6 +94,13 @@ This makes it easy to confirm that an OTA update worked.
 This keeps power usage low while still allowing remote updates.
 
 ---
+### Hardware – Active and publishing
+
+LED turns on when the device is awake and sending data.
+
+![Hardware active](images/hardware_active_led_on.png)
+
+---
 
 ## Screenshots
 
@@ -101,15 +108,7 @@ This keeps power usage low while still allowing remote updates.
 
 LED is off while the device is in deep sleep.
 
-![Hardware deep sleep](images/hardware_deep_sleep_led_off.jpg)
-
----
-
-### Hardware – Active and publishing
-
-LED turns on when the device is awake and sending data.
-
-![Hardware active](images/hardware_active_led_on.jpg)
+![Hardware deep sleep](images/hardware_deep_sleep_led_off.png)
 
 ---
 
@@ -117,7 +116,7 @@ LED turns on when the device is awake and sending data.
 
 Shows Wi-Fi connection, MQTT connection, and data publishing.
 
-![Serial monitor logs](images/serial_monitor_wifi_mqtt_logs.jpg)
+![Serial monitor logs](images/serial_monitor_wifi_mqtt_logs.png)
 
 ---
 
@@ -125,7 +124,7 @@ Shows Wi-Fi connection, MQTT connection, and data publishing.
 
 Firmware update in progress using OTA and New firmware version running after OTA update
 
-![OTA update](images/ota_update_arduino_ide.jpg)
+![OTA update](images/ota_update_arduino_ide.png)
 
 ---
 
@@ -133,7 +132,7 @@ Firmware update in progress using OTA and New firmware version running after OTA
 
 Sensor data and status messages visible in HiveMQ web client.
 
-![MQTT messages](images/mqtt_messages_hivemq_cloud.jpg)
+![MQTT messages](images/mqtt_messages_hivemq_cloud.png)
 
 ---
 
@@ -169,8 +168,8 @@ ESP32-CAM-MQTT-OTA/
 │   └── main/
 |       └── main.ino
 ├── images/
-│   ├── hardware_deep_sleep_led_off.png
 │   ├── hardware_active_led_on.png
+│   ├── hardware_deep_sleep_led_off.png
 │   ├── serial_monitor_wifi_mqtt_logs.jpg
 │   ├── ota_update_arduino_ide.png
 │   └── mqtt_messages_hivemq_cloud.png
