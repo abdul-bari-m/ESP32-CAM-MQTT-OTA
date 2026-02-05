@@ -101,7 +101,7 @@ This keeps power usage low while still allowing remote updates.
 
 LED is off while the device is in deep sleep.
 
-![Hardware deep sleep](images/hardware_deep_sleep_led_off.jpg)
+![Hardware deep sleep](images/hardware_active_led_on.png)
 
 ---
 
